@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parking Management System</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">P</div>
+        <div>
+          <h1>ParkMate</h1>
+          <p>Parking Management System</p>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#slots">Parking Slots</a>
+        <a href="#vehicles">Vehicles</a>
+        <a href="#history">History</a>
+      </nav>
+      <button class="button button-light" id="resetButton" type="button">
+        Reset Demo
+      </button>
+    </header>
+
+    <main class="page-wrap">
+      <section class="welcome-row" id="dashboard">
+        <div>
+          <p class="eyebrow">PARKING OVERVIEW</p>
+          <h2>Good day! Manage your parking area.</h2>
+          <p class="muted">
+            View available spaces, register vehicles and manage exits.
+          </p>
+        </div>
+        <div class="today-box">
+          <span>Today</span>
+          <strong id="todayDate">--</strong>
+        </div>
+      </section>
+
+      <section class="stats-grid" aria-label="Parking summary">
+        <article class="stat-card">
+          <div class="stat-label">Total Slots</div>
+          <div class="stat-value" id="totalSlots">10</div>
+          <div class="stat-note">Parking capacity</div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-label">Available Slots</div>
+          <div class="stat-value green-text" id="availableSlots">6</div>
+          <div class="stat-note">Ready for parking</div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-label">Occupied Slots</div>
+          <div class="stat-value red-text" id="occupiedSlots">4</div>
+          <div class="stat-note">Vehicles currently parked</div>
+        </article>
+        <article class="stat-card">
+          <div class="stat-label">Total Collection</div>
+          <div class="stat-value" id="totalCollection">₹0</div>
+          <div class="stat-note">Completed parking records</div>
+        </article>
+      </section>
+
+      <section class="panel" id="slots">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">PARKING AREA</p>
+            <h3>Parking Slots</h3>
+          </div>
+          <div class="legend">
+            <span><i class="legend-dot available-dot"></i> Available</span>
+            <span><i class="legend-dot occupied-dot"></i> Occupied</span>
+          </div>
+        </div>
+        <div class="slot-grid" id="slotGrid"></div>
+      </section>
+
+      <section class="content-grid" id="vehicles">
+        <section class="panel form-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">NEW PARKING</p>
+              <h3>Vehicle Entry</h3>
+            </div>
+            <span class="small-tag">Entry Form</span>
+          </div>
+          <form id="entryForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="ownerName">Owner Name</label>
+                <input
+                  type="text"
+                  id="ownerName"
+                  placeholder="Enter owner name"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="mobile">Mobile Number</label>
+                <input
+                  type="tel"
+                  id="mobile"
+                  placeholder="10 digit mobile number"
+                  maxlength="10"
+                  required
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="vehicleNumber">Vehicle Number</label>
+                <input
+                  type="text"
+                  id="vehicleNumber"
+                  placeholder="e.g. RJ14AB1234"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="vehicleType">Vehicle Type</label>
+                <select id="vehicleType" required>
+                  <option value="Bike">Bike – ₹10/hour</option>
+                  <option value="Car" selected>Car – ₹30/hour</option>
+                  <option value="SUV">SUV – ₹40/hour</option>
+                  <option value="Bus">Bus – ₹60/hour</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="slotNumber">Select Parking Slot</label>
+              <select id="slotNumber" required></select>
+            </div>
+            <div class="rate-info" id="rateInfo">
+              Parking rate: ₹30 per hour
+            </div>
+            <button class="button button-primary full-button" type="submit">
+              Add Vehicle
+            </button>
+            <p class="form-message" id="formMessage" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="panel active-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">CURRENT PARKING</p>
+              <h3>Active Vehicles</h3>
+            </div>
+            <span class="count-tag" id="activeCount">4 Vehicles</span>
+          </div>
+          <div class="search-box">
+            <input
+              type="search"
+              id="activeSearch"
+              placeholder="Search by name or vehicle number..."
+              aria-label="Search active vehicles"
+            />
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Vehicle / Owner</th>
+                  <th>Slot</th>
+                  <th>Entry Time</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="activeTable"></tbody>
+            </table>
+          </div>
+          <p class="empty-message" id="activeEmpty" hidden>
+            No active vehicles found.
+          </p>
+        </section>
+      </section>
+
+      <section class="panel" id="history">
+        <div class="section-heading history-heading">
+          <div>
+            <p class="eyebrow">PARKING RECORDS</p>
+            <h3>Parking History</h3>
+          </div>
+          <input
+            class="history-search"
+            type="search"
+            id="historySearch"
+            placeholder="Search history..."
+            aria-label="Search parking history"
+          />
+        </div>
+        <div class="table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Vehicle Number</th>
+                <th>Owner</th>
+                <th>Type</th>
+                <th>Slot</th>
+                <th>Duration</th>
+                <th>Parking Fee</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="historyTable"></tbody>
+          </table>
+        </div>
+        <p class="empty-message" id="historyEmpty" hidden>
+          No parking history found.
+        </p>
+      </section>
+
+      <footer class="footer">
+        <span>ParkMate · Parking Management System</span>
+        <span>Student Project · HTML, CSS & JavaScript</span>
+      </footer>
+    </main>
+
+    <div class="modal" id="editModal" hidden>
+      <div class="modal-card">
+        <div class="modal-heading">
+          <div>
+            <p class="eyebrow">UPDATE DETAILS</p>
+            <h3>Edit Vehicle</h3>
+          </div>
+          <button
+            class="close-button"
+            id="closeModal"
+            type="button"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+        <form id="editForm">
+          <input type="hidden" id="editId" />
+          <div class="form-group">
+            <label for="editOwner">Owner Name</label>
+            <input type="text" id="editOwner" required />
+          </div>
+          <div class="form-group">
+            <label for="editMobile">Mobile Number</label>
+            <input type="tel" id="editMobile" maxlength="10" required />
+          </div>
+          <div class="form-group">
+            <label for="editVehicleNumber">Vehicle Number</label>
+            <input type="text" id="editVehicleNumber" required />
+          </div>
+          <div class="form-group">
+            <label for="editVehicleType">Vehicle Type</label>
+            <select id="editVehicleType">
+              <option value="Bike">Bike – ₹10/hour</option>
+              <option value="Car">Car – ₹30/hour</option>
+              <option value="SUV">SUV – ₹40/hour</option>
+              <option value="Bus">Bus – ₹60/hour</option>
+            </select>
+          </div>
+          <button class="button button-primary full-button" type="submit">
+            Save Changes
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
